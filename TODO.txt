@@ -1,0 +1,10 @@
+ * Put it into version control.
+
+ * Unroll ticket changes to that date (trac plugin)? Spider tickets now?
+   Spidering seems easier but kind of a shame somehow. We're not talking
+   about untrusted services.
+
+ * Do one automatically when any ticket in the report changes? (Actually
+   just a cronjob dumping to versioncontrol could accomplish this easier
+   in theory.)
+   
