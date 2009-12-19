@@ -7,8 +7,8 @@ Usage: export.py TRAC_URL REPORT_NUMBER [PATH_TO_FILE] [PATH_TO_SVN_CHECKOUT_ROO
 
  python export.py https://projects.openplans.org/deliverance 9 report9.html ~/tracdocs/
 
-If PATH_TO_SVN_CHECKOUT_ROOT is set and there is no diff from previous save,
-the program will print "No changes."
+If PATH_TO_SVN_CHECKOUT_ROOT is set and a commit was made, the program
+will print "Committed revision <rev>." like `svn`.
 
 """
 
@@ -33,8 +33,9 @@ def main(url, base, to_file=None, svnroot=None, msg=None):
     
     if msg is None:
         msg = "Report from %s on %s" % (url, datetime.now())
-    if not repo.write(to_file, out, msg=msg):
-        print "No changes."
+    rev = repo.write(to_file, out, msg=msg)
+    if rev:
+        print "Committed revision %s." % rev.number
 
 import urllib2
 from BeautifulSoup import BeautifulSoup
