@@ -1,5 +1,3 @@
- * Put it into version control.
-
  * Unroll ticket changes to that date (trac plugin)? Spider tickets now?
    Spidering seems easier but kind of a shame somehow. We're not talking
    about untrusted services.

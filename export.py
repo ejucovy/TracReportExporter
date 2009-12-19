@@ -1,8 +1,40 @@
 __doc__ = """
-Usage: export.py [TRAC_URL] [REPORT_NUMBER]
+Usage: export.py TRAC_URL REPORT_NUMBER [PATH_TO_FILE] [PATH_TO_SVN_CHECKOUT_ROOT] [COMMIT_MESSAGE]
 
-e.g. python export.py https://projects.openplans.org/deliverance 9 > report9.html
+ python export.py https://projects.openplans.org/deliverance 9 > report9.html
+
+ python export.py https://projects.openplans.org/deliverance 9 report9.html
+
+ python export.py https://projects.openplans.org/deliverance 9 report9.html ~/tracdocs/
+
+If PATH_TO_SVN_CHECKOUT_ROOT is set and there is no diff from previous save,
+the program will print "No changes."
+
 """
+
+from sven.backend import SvnAccess
+
+from datetime import datetime
+
+def main(url, base, to_file=None, svnroot=None, msg=None):
+    out = build(url, base)
+
+    if not to_file:
+        print out
+        return
+
+    if not svnroot:
+        fp = open(to_file, 'w')
+        fp.write(out)
+        fp.close
+        return 
+
+    repo = SvnAccess(svnroot)
+    
+    if msg is None:
+        msg = "Report from %s on %s" % (url, datetime.now())
+    if not repo.write(to_file, out, msg=msg):
+        print "No changes."
 
 import urllib2
 from BeautifulSoup import BeautifulSoup
@@ -14,16 +46,22 @@ _head = """
 </head>
 """
 
-def main(url, base):
+def build(url, base):
     doc = BeautifulSoup(urllib2.urlopen(url).read())
     
     content = doc.findAll('div', attrs={'id':'content'})[0]
 
     head = _head % (base, base)
 
-    print "<html>", head, "<body>", content, "<body></html>"
-
+    return "<html>%s<body>%s<body></html>" % (head, content)
+    
 import sys
+
 if __name__ == '__main__':
-    url = "%s/report/%s" % (sys.argv[1], sys.argv[2])
-    main(url, sys.argv[1])
+    try:
+        url = "%s/report/%s" % (sys.argv[1], sys.argv[2])
+    except:
+        print __doc__
+        exit(0)
+
+    main(url, sys.argv[1], *sys.argv[3:])
