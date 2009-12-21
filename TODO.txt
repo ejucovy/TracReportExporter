@@ -1,8 +1,20 @@
- * Unroll ticket changes to that date (trac plugin)? Spider tickets now?
-   Spidering seems easier but kind of a shame somehow. We're not talking
-   about untrusted services.
+ * A companion Trac plugin that unrolls ticket changes to a given date,
+   and displays the ticket as of that date. Then in the frozen report,
+   we can ask the Trac if it provides that plugin, and if so rewrite
+   ticket links to get the tickets unrolled as-of the current date.
 
- * Do one automatically when any ticket in the report changes? (Actually
-   just a cronjob dumping to versioncontrol could accomplish this easier
-   in theory.)
-   
+   The alternative is spidering tickets now and dumping their frozen
+   state, but that feels wrong to me. The primary use case is trusted
+   services, and decoupled cooperation seems preferable. Also I think
+   it's no disaster if the report doesn't enable this information;
+   hopefully the report was designed well enough that all information
+   that needs to be frozen in order for the report to be meaningful
+   is already there on the report itself.
+
+ * A simple configuration language for setting up one or many of these
+   by a cronjob would be nice. There's actually no reason to be smarter
+   than a scheduled cronjob, e.g. automatic dumps when any ticket in the
+   report changes. That's because reports-over-time are actually more
+   meaningful with time as the independent variable ("What's the daily
+   rate of changes on this report?") than with changes as the independent
+   variable ("What's the frequency over time of changes on this report?")
